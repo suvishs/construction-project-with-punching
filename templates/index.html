@@ -1,0 +1,544 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>construction</title>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <link href="{% static 'index/css/styles.css' %}" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+
+
+
+    <!-- Bootstrap CSS and JavaScript -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+    <style>
+        .card-header {
+            background-color: rgb(107, 112, 112);
+            color: aliceblue;
+        }
+
+        .modal {
+            z-index: 9999;
+        }
+
+        .attendance_btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        th{
+            text-align: center;
+        }
+        td{
+            text-align: center;
+        }
+        .form-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f2f2f2;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Style form labels */
+        label {
+            font-weight: bold;
+        }
+
+        /* Style form inputs and select */
+        input[type="date"], select {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        /* Style the submit button */
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        /* Style the submit button on hover */
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        
+        .visitingform{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body class="sb-nav-fixed">
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <!-- Navbar Brand-->
+        <a class="navbar-brand ps-3" href="index.html">admin panel</a>
+        <!-- Sidebar Toggle-->
+        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i
+                class="fas fa-bars"></i></button>
+        <!-- Navbar Search-->
+        <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+            <div class="input-group">
+                <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..."
+                    aria-describedby="btnNavbarSearch" />
+                <button class="btn btn-outline-secondary" id="btnNavbarSearch" type="button"><i class="fas fa-search"
+                        id="na"></i></button>
+            </div>
+        </form>
+        <!-- Navbar-->
+        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    {% comment %} <li><a class="dropdown-item" href="#!">Settings</a></li>
+                    <li><a class="dropdown-item" href="#!">Activity Log</a></li> {% endcomment %}
+                    <li>
+                        <hr class="dropdown-divider" />
+                    </li>
+                    <li><a class="dropdown-item" href="logout">Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <div class="sb-sidenav-menu-heading">Core</div>
+                        <a class="nav-link" href="/index">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Dashboard
+                        </a>
+
+                        <div class="sb-sidenav-menu-heading">Interface</div>
+                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
+                            data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                            Manage Punch
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne"
+                            data-bs-parent="#sidenavAccordion">
+                            <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+                                <a class="nav-link" href="#attendance">View Attendance Reports</a>
+                            </nav>
+                            <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+                                {% comment %} <a class="nav-link" href="Applicationforleave">Application for Leave</a> {% endcomment %}
+                                <a href="#" class="nav-link" class="small text-white stretched-link" data-toggle="modal"
+                                        data-target="#myModal3">Application for Leave</a>
+                            </nav>
+                            <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+                                {% comment %} <a class="nav-link" href="Viewleaveaplications">View Leave Applications</a> {% endcomment %}
+                                <a href="#" class="nav-link" class="small text-white stretched-link" data-toggle="modal"
+                                        data-target="#myModal4">Application for Leave</a>
+                            </nav>
+                            <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+                                {% comment %} <a class="nav-link" href="ApproveViewleaveaplications">Approve Leave Application</a> {% endcomment %}
+                                <a href="#" class="nav-link" class="small text-white stretched-link" data-toggle="modal"
+                                        data-target="#myModal5">Approve Leave Application</a>
+                            </nav>
+                        </div>
+
+                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages"
+                            aria-expanded="false" aria-controls="collapsePages">
+                            <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                            Manage Visiting
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+
+                        <div class="collapse" id="collapsePages" aria-labelledby="headingTwo"
+                            data-bs-parent="#sidenavAccordion">
+                            <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+                                {% comment %} <a class="nav-link" href="visiting_details">Add Visiting Details</a> {% endcomment %}
+                                <a href="#" class="nav-link" class="small text-white stretched-link" data-toggle="modal"
+                                        data-target="#myModal2">Add Visiting Details</a>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+                <div class="sb-sidenav-footer">
+                    <div class="small">Logged in as:</div>
+                    {{ name }}
+                </div>
+            </nav>
+        </div>
+        {% comment %} ------------- Punching Section start ------------- {% endcomment %}
+        <div class="modal fade" id="myModal">
+            <div class="modal-dialog">
+                <div class="modal-content"><br>
+                    <h4 style="text-align: center;">Mark Punch</h4>
+                    <div class="attendance_btn">
+                        <a href="#" id="markAttendanceBtn" class="btn btn-success">Mark attendance</a>
+                    </div><br>
+                </div>
+            </div>
+        </div>
+        {% comment %} ------------- Punching Section end ------------- {% endcomment %}
+        {% comment %} ------------- Visiting Section start ------------- {% endcomment %}
+        <div class="modal fade" id="myModal2">
+            <div class="modal-dialog">
+                <div class="modal-content"><br>
+                    <div class="container visitingform">
+                        <h1>Visiting Report Form</h1>
+                        <form method="post" action="visiting_report">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="name">Name:</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="address">Address:</label>
+                                <input type="text" class="form-control" id="address" name="address" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phonenumber">Phone Number:</label>
+                                <input type="text" class="form-control" id="phonenumber" name="phonenumber" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="approval_chance">Approval Chance (under 10):</label>
+                                <input type="number" class="form-control" id="approval_chance" name="approval_chance" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="summery">Summary:</label>
+                                <textarea class="form-control" id="summery" name="summery" rows="3" required></textarea>
+                            </div><br><br>
+                            
+                            <input type="submit" class="btn btn-primary">
+                        </form><br><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% comment %} -------------  Visiting Section end ------------- {% endcomment %}
+        {% comment %} -------------  Application for leave Section start ------------- {% endcomment %}
+        <div class="modal fade" id="myModal3">
+            <div class="modal-dialog">
+                <div class="modal-content"><br>
+                    <h1 style="text-align: center;">Application For Leave</h1><br>
+                    <form action="Applicationforleave" method="post">
+                        {% csrf_token %}
+                        <input type="text" class="form-control" name="empname" placeholder="Employee Name" required>
+                        <input type="text" class="form-control" name="reason" placeholder="Reason" required>
+                        <input type="submit">
+                    </form><br><br>
+                </div>
+            </div>
+        </div>
+        {% comment %} -------------  Application for leave Section end ------------- {% endcomment %}
+        {% comment %} -------------  leave application Section start ------------- {% endcomment %}
+        <div class="modal fade" id="myModal4">
+            <div class="modal-dialog">
+                <div class="modal-content"><br>
+                    <table class="table table-sm">
+                        <thead>
+                          <tr>
+                            <th scope="col">Sl No</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Reason</th>
+                            <th scope="col">Application Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        {% for i in leave %}
+                            <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ i.empname }}</td>
+                                <td>{{ i.reason }}</td>
+                                {% if i.approval %}
+                                    <td style="color: green;">Approved</td>
+                                {% else %}
+                                    <td style="color: red;">Pending</td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                      </table>
+                </div>
+            </div>
+        </div>
+        {% comment %} -------------  leave application Section end ------------- {% endcomment %}
+        {% comment %} -------------  leave Approve Section start ------------- {% endcomment %}
+        <div class="modal fade" id="myModal5">
+            <div class="modal-dialog">
+                <div class="modal-content"><br>
+                    <table class="table table-sm">
+                        <thead>
+                        <tr>
+                            <th scope="col">Sl No</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Reason</th>
+                            <th scope="col">Application Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for i in leave %}
+                            <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ i.empname }}</td>
+                                <td>{{ i.reason }}</td>
+                                {% if i.approval %}
+                                    <td style="color: green;">Approved</td>
+                                {% else %}
+                                    <td style="color: red;"><a class="btn btn-success" href="{% url 'ApproveViewleaveaplication' i.id %}">Approve</td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% comment %} -------------  leave Approve Section end ------------- {% endcomment %}
+
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    {% for i in messages %}
+                        <br><p style="text-align: center;">{{i}}</p>
+                    {% endfor %}
+                    <h1 class="mt-4">Dashboard</h1>
+                    <ol class="breadcrumb mb-4">
+                        <li class="breadcrumb-item active">Dashboard</li>
+                    </ol>
+                    <div class="row">
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card bg-primary text-white mb-4">
+                                <div class="card-body">Manage Punch</div>
+                                <div class="card-footer d-flex align-items-center justify-content-between">
+                                    <a href="#" class="small text-white stretched-link" data-toggle="modal"
+                                        data-target="#myModal">Add Punch</a>
+                                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card bg-warning text-white mb-4">
+                                <div class="card-body">Punching Details</div>
+                                <div class="card-footer d-flex align-items-center justify-content-between">
+                                    <a class="small text-white stretched-link" href="#attendance">View
+                                        Details</a>
+                                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card bg-success text-white mb-4">
+                                <div class="card-body">Manage Visiting</div>
+                                <div class="card-footer d-flex align-items-center justify-content-between">
+                                    <a href="#" class="small text-white stretched-link" data-toggle="modal"
+                                        data-target="#myModal2">Add Visiting</a>
+                                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card bg-danger text-white mb-4">
+                                <div class="card-body">Visiting Details</div>
+                                <div class="card-footer d-flex align-items-center justify-content-between">
+                                    <a class="small text-white stretched-link" href="#visiting_details">View Details</a>
+                                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mb-4">
+                    <br><br> 
+                    
+                    <div class="card mb-4" id="attendance">
+                        <div class="card-header">
+                            <i class="fas fa-table me-1"></i>
+                            Attendance Table
+                        </div>
+                        <div class="form-container">
+                            <form action="sortattandance" method="post">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="start_date">Start Date:</label>
+                                    <input type="date" class="form-control" id="start_date" name="start_date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="end_date">End Date:</label>
+                                    <input type="date" class="form-control" id="end_date" name="end_date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="by_user">User:</label>
+                                    <select class="form-control" id="by_user" name="by_user">
+                                        <option value="all">All</option>
+                                        {% for i in users %}
+                                        <option value="{{i}}">{{i}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" class="btn btn-primary" value="Submit">
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="card-body">
+                            <table id="datatablesSimple">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Morning Punch</th>
+                                        <th scope="col">Evening punch</th>
+                                        <th scope="col">Working Hour</th>
+                                        <th scope="col">Overtime Hour</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for i in attendance %}
+                                        <tr>
+                                            <td>{{i.date}}</td>
+                                            <td>{{i.usr.username}}</td>
+                                            <td>{{i.morning_time}}</td>
+                                            <td>{{i.evening_time}}</td>
+
+                                            {% if i.working_hour %}
+                                            <td>{{i.working_hour}}</td>
+                                            {% else %}
+                                            <td style="color: yellow;">Waiting</td>
+                                            {% endif %}
+
+                                            {% if i.difference %}
+                                            <td>{{i.difference}}</td>
+                                            {% else %}
+                                            <td style="color: yellow;">Waiting</td>
+                                            {% endif %} 
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+                    <div class="card mb-4" id="visiting_details">
+                        <div class="card-header">
+                            <i class="fas fa-table me-1"></i>
+                            Visiting Table
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Sl no</th>
+                                            <th>Employee Name</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Visited Date</th>
+                                            <th scope="col">Visited Time</th>
+                                            <th scope="col">Phone Number</th>
+                                            <th scope="col">Address</th>
+                                            <th scope="col">Approval Chance</th>
+                                            <th scope="col">Summary</th>
+                                            <th colspan="2">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in visiting %}
+                                            <tr>
+                                                <td scope="col">{{ forloop.counter }}</td>
+                                                <td>{{ name }}</td>
+                                                <td scope="col">{{ i.name }}</td>
+                                                <td scope="col">{{ i.visited_date }}</td>
+                                                <td scope="col">{{ i.visited_time }}</td>
+                                                <td scope="col">{{ i.phonenumber }}</td>
+                                                <td scope="col" style="text-align: justify;">{{ i.address }}</td>
+                                                <td scope="col">{{ i.approval_chance }}</td>
+                                                <td scope="col" style="text-align: justify;">{{ i.summery }}</td>
+                                                <td><a href="{% url 'update_visiting' i.id %}" class="btn btn-warning">Update</a></td>
+                                                <td><a href="{% url 'delete_visiting' i.id %}" class="btn btn-danger">Delete</a></td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </main>
+            <footer class="py-4 bg-light mt-auto">
+                <div class="container-fluid px-4">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        <div class="text-muted">Copyright &copy; CONSTRUCTION 2023</div>
+                        <div>
+                            <a href="#">Privacy Policy</a>
+                            &middot;
+                            <a href="#">Terms &amp; Conditions</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('markAttendanceBtn').addEventListener('click', function () {
+            // Send AJAX request to mark attendance
+            fetch('{% url "mark_attendance" %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',  // Include the CSRF token
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({}),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.status);  // Handle the response as needed
+                    if (data.status === 'success') {
+                        window.alert('Attendance marked successfully!');
+                    } else if (data.status === 'already_marked') {
+                        window.alert('Attendance already marked...!');
+                    } else if (data.status === 'incorrect_punch_timing') {
+                        window.alert('Incorrect Punch Timing...!');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+    <script src="{% static 'index/js/scripts.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+    <script src="{% static 'index/assets/demo/chart-area-demo.js' %}"></script>
+    <script src="{% static 'index/assets/demo/chart-bar-demo.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
+        crossorigin="anonymous"></script>
+    <script src="{% static 'index/js/datatables-simple-demo.js' %}"></script>
+</body>
+
+</html>
