@@ -213,6 +213,43 @@ def sortattandance(request):
             attendance = Attendance.objects.filter(date__gte=start_date, date__lte=end_date, usr=usr)
             return render(request, "index.html", {"attendance":attendance, "users":users, "visiting":visiting, "name":name, "leave":leave})
 
+def sortvisiting(request):
+    users = User.objects.all()
+    if request.method == "POST":
+        start_date = request.POST.get("start_date")
+        print(start_date)
+        end_date = request.POST.get("end_date")
+        print(end_date)
+        by_user = request.POST.get("by_user")
+        print(by_user)
+        name = request.user
+        leave = LeaveApplication.objects.all()
+        attendance = Attendance.objects.all()
+        # visiting = VisitingReport.objects.all()
+        users = User.objects.all()
+        eight_hours = timedelta(hours=8)
+        for i in attendance:
+            if i.morning_time and i.evening_time:
+                morning_datetime = datetime.combine(datetime.today(), i.morning_time)
+                evening_datetime = datetime.combine(datetime.today(), i.evening_time)
+                working_hour = evening_datetime - morning_datetime
+                difference = working_hour - eight_hours
+                print()
+                i.working_hour = working_hour
+                if working_hour <= eight_hours:
+                    i.difference = "0Hrs"
+                else:
+                    i.difference = difference
+                i.save()
+        if by_user == "all":
+            visiting = VisitingReport.objects.filter(visited_date__gte=start_date, visited_date__lte=end_date)
+            return render(request, "index.html", {"attendance":attendance, "users":users, "visiting":visiting, "name":name, "leave":leave})
+        else:
+            usr = User.objects.get(username=by_user)
+            visiting = VisitingReport.objects.filter(visited_date__gte=start_date, visited_date__lte=end_date, usr=usr)
+            return render(request, "index.html", {"attendance":attendance, "users":users, "visiting":visiting, "name":name, "leave":leave})
+    
+
 def update_visiting(request, id):
     visited = VisitingReport.objects.get(id=id)
     leave = LeaveApplication.objects.all()

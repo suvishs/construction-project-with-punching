@@ -90,6 +90,29 @@
             align-items: center;
             justify-content: center;
         }
+        .summery {
+            min-width: 200px;
+        }
+        @media screen and (max-width: 600px) {
+            .summery {
+                min-width: 100%; 
+            }
+        }
+        #myModal{
+            overflow: scroll;
+        }
+        #myModal2{
+            overflow: scroll;
+        }
+        #myModal3{
+            overflow: scroll;
+        }
+        #myModal4{
+            overflow: scroll;
+        }
+        #myModal5{
+            overflow: scroll;
+        }
     </style>
 </head>
 
@@ -156,7 +179,7 @@
                             <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
                                 {% comment %} <a class="nav-link" href="Viewleaveaplications">View Leave Applications</a> {% endcomment %}
                                 <a href="#" class="nav-link" class="small text-white stretched-link" data-toggle="modal"
-                                        data-target="#myModal4">Application for Leave</a>
+                                        data-target="#myModal4">View Leave Applications</a>
                             </nav>
                             <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
                                 {% comment %} <a class="nav-link" href="ApproveViewleaveaplications">Approve Leave Application</a> {% endcomment %}
@@ -244,7 +267,12 @@
                     <form action="Applicationforleave" method="post">
                         {% csrf_token %}
                         <input type="text" class="form-control" name="empname" placeholder="Employee Name" required>
-                        <input type="text" class="form-control" name="reason" placeholder="Reason" required>
+                        {% comment %} <input type="text" class="form-control" name="reason" placeholder="Reason" required> {% endcomment %}
+                        <select name="reason" class="form-control">
+                            <option value="Casual Leave">Casual Leave</option>
+                            <option value="Sick Leave">Sick Leave</option>
+                            <option value="Other Reason">Other Reason</option>
+                        </select> 
                         <input type="submit">
                     </form><br><br>
                 </div>
@@ -445,21 +473,48 @@
                             <i class="fas fa-table me-1"></i>
                             Visiting Table
                         </div>
+
+                        <div class="form-container">
+                            <form action="sortvisiting" method="post">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="start_date">Start Date:</label>
+                                    <input type="date" class="form-control" id="start_date" name="start_date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="end_date">End Date:</label>
+                                    <input type="date" class="form-control" id="end_date" name="end_date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="by_user">User:</label>
+                                    <select class="form-control" id="by_user" name="by_user">
+                                        <option value="all">All</option>
+                                        {% for i in users %}
+                                        <option value="{{i}}">{{i}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" class="btn btn-primary" value="Submit">
+                                </div>
+                            </form>
+                        </div>
+
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
-                                            <th scope="col">Sl no</th>
+                                            <th class="col-1">Sl no</th>
                                             <th>Employee Name</th>
-                                            <th scope="col">Name</th>
-                                            <th scope="col">Visited Date</th>
-                                            <th scope="col">Visited Time</th>
-                                            <th scope="col">Phone Number</th>
-                                            <th scope="col">Address</th>
-                                            <th scope="col">Approval Chance</th>
-                                            <th scope="col">Summary</th>
-                                            <th colspan="2">Actions</th>
+                                            <th class="col-1">Name</th>
+                                            <th class="col-1">Visited Date</th>
+                                            <th class="col-1">Visited Time</th>
+                                            <th class="col-1">Phone Number</th>
+                                            <th class="col-1">Address</th>
+                                            <th class="col-1">Approval Chance</th>
+                                            <th class="col-3 summery">Summary</th>
+                                            <th class="col-1" colspan="2">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>

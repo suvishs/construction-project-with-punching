@@ -19,7 +19,7 @@ class Attendance(models.Model):
     
 class LeaveApplication(models.Model):
     empname = models.CharField(max_length=50, null=True)
-    reason = models.CharField(max_length=100, null=True)
+    reason = models.CharField(max_length=30, null=True)
     approval = models.BooleanField(default=False, null=True)
     usr = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
     
